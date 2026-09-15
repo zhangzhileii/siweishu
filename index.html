@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>密码输入</title>
+<style>
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: #f5f5f5;
+  }
+
+  /* 全屏遮罩 */
+  .password-mask {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: rgba(0, 0, 0, .55);
+    display: flex;
+    align-items: flex-end;
+
+    /* 页面打开时直接显示 */
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* 底部密码弹窗 */
+  .password-dialog {
+    width: 100%;
+    background: #fff;
+    border-radius: 18px 18px 0 0;
+    padding: 18px 0 calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .dialog-header {
+    position: relative;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+  }
+
+  /*
+   * 不显示关闭按钮
+   * 故意不提供任何关闭入口，必须完成4位密码输入
+   */
+
+  .title {
+    margin: 20px 20px 36px;
+    font-size: 21px;
+    font-weight: 700;
+    color: #222;
+  }
+
+  /* 四个密码圆点 */
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 43px;
+    margin-bottom: 42px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #cfcfcf;
+    transition: transform .08s ease, background .08s ease;
+  }
+
+  .dot.active {
+    background: #777;
+    transform: scale(1.08);
+  }
+
+  /* 数字键盘 */
+  .keypad {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: #e5e7eb;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .key {
+    height: 58px;
+    border: 0;
+    border-radius: 0;
+    background: #fff;
+    color: #222;
+    font-size: 21px;
+    font-weight: 400;
+    touch-action: manipulation;
+    user-select: none;
+  }
+
+  .key:active {
+    background: #e5e5e5;
+  }
+
+  .key .letters {
+    display: block;
+    margin-top: 1px;
+    font-size: 8px;
+    line-height: 9px;
+    font-weight: 600;
+    color: #555;
+  }
+
+  .key.empty {
+    background: #f1f3f6;
+  }
+
+  .key.delete {
+    font-size: 20px;
+    background: #fff;
+  }
+
+  @media (max-height: 650px) {
+    .title {
+      margin-bottom: 22px;
+    }
+
+    .dots {
+      margin-bottom: 25px;
+    }
+
+    .key {
+      height: 52px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- 页面加载后默认显示，且不可手动关闭 -->
+<div class="password-mask" id="passwordMask">
+  <div class="password-dialog" id="passwordDialog">
+
+    <div class="dialog-header"></div>
+
+    <div class="title">Digite sua senha de 4 dígitos</div>
+
+    <div class="dots" id="dots">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+
+    <div class="keypad">
+      <button class="key" data-number="1">1</button>
+      <button class="key" data-number="2">2<span class="letters">ABC</span></button>
+      <button class="key" data-number="3">3<span class="letters">DEF</span></button>
+
+      <button class="key" data-number="4">4<span class="letters">GHI</span></button>
+      <button class="key" data-number="5">5<span class="letters">JKL</span></button>
+      <button class="key" data-number="6">6<span class="letters">MNO</span></button>
+
+      <button class="key" data-number="7">7<span class="letters">PQRS</span></button>
+      <button class="key" data-number="8">8<span class="letters">TUV</span></button>
+      <button class="key" data-number="9">9<span class="letters">WXYZ</span></button>
+
+      <button class="key empty" aria-hidden="true" tabindex="-1"></button>
+      <button class="key" data-number="0">0</button>
+      <button class="key delete" id="deleteBtn" aria-label="删除">⌫</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let password = "";
+
+  const mask = document.getElementById("passwordMask");
+  const dots = document.querySelectorAll(".dot");
+
+  function updateDots() {
+    dots.forEach((dot, index) => {
+      dot.classList.toggle("active", index < password.length);
+    });
+  }
+
+  function inputNumber(number) {
+    if (password.length >= 4) return;
+
+    password += number;
+    updateDots();
+
+    // 满4位后自动关闭
+    if (password.length === 4) {
+      const result = password;
+
+      setTimeout(() => {
+        /*
+         * 在这里处理密码
+         *
+         * 例如：
+         * if (result === "1234") {
+         *     unlockPage();
+         * }
+         */
+
+        console.log("输入的4位密码:", result);
+
+        // 输入完成后才能关闭
+        mask.style.display = "none";
+        document.body.style.overflow = "";
+      }, 120);
+    }
+  }
+
+  // 数字输入
+  document.querySelectorAll(".key[data-number]").forEach(btn => {
+    btn.addEventListener("click", function () {
+      inputNumber(this.dataset.number);
+    });
+  });
+
+  // 删除一位
+  document.getElementById("deleteBtn").addEventListener("click", function () {
+    if (password.length > 0) {
+      password = password.slice(0, -1);
+      updateDots();
+    }
+  });
+
+  /*
+   * 禁止点击遮罩关闭
+   * 禁止任何点击弹窗外关闭
+   */
+  mask.addEventListener("click", function (e) {
+    e.stopPropagation();
+  });
+
+  /*
+   * 页面一打开就锁定滚动
+   */
+  document.body.style.overflow = "hidden";
+
+  /*
+   * 安卓浏览器返回键：
+   * 当前页面不能通过弹窗逻辑主动关闭。
+   * 不绑定 close 操作。
+   */
+</script>
+
+</body>
+</html>
