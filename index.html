@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
+
 <meta charset="UTF-8">
 
 <meta name="viewport"
@@ -12,18 +14,32 @@
 
 <title>密码输入</title>
 
+
 <style>
+
+/* =========================================================
+   基础
+========================================================= */
 
 * {
     box-sizing: border-box;
+
     -webkit-tap-highlight-color: transparent;
+
+    -webkit-user-select: none;
+    user-select: none;
 }
+
 
 html,
 body {
-    margin: 0;
+
     width: 100%;
     height: 100%;
+
+    margin: 0;
+    padding: 0;
+
     overflow: hidden;
 
     font-family:
@@ -33,14 +49,16 @@ body {
         Arial,
         sans-serif;
 
-    background: #f5f5f5;
+    background: #ffffff;
 }
 
-/* =========================
+
+/* =========================================================
    全屏遮罩
-========================= */
+========================================================= */
 
 .password-mask {
+
     position: fixed;
 
     inset: 0;
@@ -50,41 +68,47 @@ body {
 
     z-index: 99999;
 
-    background: rgba(0, 0, 0, .55);
+    background: rgba(0, 0, 0, 0.55);
 
     display: flex;
 
     align-items: flex-end;
 
     opacity: 1;
+
     visibility: visible;
 }
 
 
-/* =========================
-   全屏密码区域
-========================= */
+/* =========================================================
+   全屏密码页面
+========================================================= */
 
 .password-dialog {
+
+    position: relative;
 
     width: 100%;
     height: 100%;
 
-    background: #fff;
+    background: #ffffff;
 
     display: flex;
+
     flex-direction: column;
 
     padding-top: 18px;
 
     padding-bottom:
         calc(12px + env(safe-area-inset-bottom));
+
+    overflow: hidden;
 }
 
 
-/* =========================
-   顶部空白区域
-========================= */
+/* =========================================================
+   顶部空白
+========================================================= */
 
 .dialog-header {
 
@@ -94,9 +118,9 @@ body {
 }
 
 
-/* =========================
+/* =========================================================
    密码标题
-========================= */
+========================================================= */
 
 .title {
 
@@ -105,11 +129,15 @@ body {
         20px
         28px;
 
+    width: calc(100% - 40px);
+
     font-size: 21px;
+
+    line-height: 28px;
 
     font-weight: 700;
 
-    color: #222;
+    color: #222222;
 
     text-align: center;
 
@@ -117,9 +145,9 @@ body {
 }
 
 
-/* =========================
+/* =========================================================
    四个密码圆点
-========================= */
+========================================================= */
 
 .dots {
 
@@ -147,26 +175,28 @@ body {
     background: #cfcfcf;
 
     transition:
-        transform .08s ease,
-        background .08s ease;
+        transform 0.08s ease,
+        background 0.08s ease;
 }
 
 
 .dot.active {
 
-    background: #777;
+    background: #555555;
 
     transform: scale(1.08);
 }
 
 
-/* =========================
+/* =========================================================
    数字键盘
-========================= */
+========================================================= */
 
 .keypad {
 
     width: 100%;
+
+    margin-top: auto;
 
     display: grid;
 
@@ -180,27 +210,29 @@ body {
     border-top:
         1px solid #e5e7eb;
 
-    margin-top: auto;
-
     flex-shrink: 0;
 }
 
 
-/* =========================
+/* =========================================================
    数字按钮
-========================= */
+========================================================= */
 
 .key {
 
+    position: relative;
+
     height: 58px;
+
+    padding: 0;
 
     border: 0;
 
     border-radius: 0;
 
-    background: #fff;
+    background: #ffffff;
 
-    color: #222;
+    color: #222222;
 
     font-size: 21px;
 
@@ -208,19 +240,81 @@ body {
 
     touch-action: manipulation;
 
-    user-select: none;
+    overflow: hidden;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.08s ease,
+        transform 0.08s ease;
 }
 
 
-.key:active {
+/* =========================================================
+   支付宝风格按压状态
+========================================================= */
 
-    background: #e5e5e5;
+.key:active,
+.key.pressed {
+
+    background: #e2e2e2 !important;
+
+    transform: scale(0.96);
 }
 
 
-/* =========================
-   数字下面的 ABC
-========================= */
+/* =========================================================
+   点击时的圆形反馈
+========================================================= */
+
+.key::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 0;
+    height: 0;
+
+    border-radius: 50%;
+
+    background: rgba(0, 0, 0, 0.08);
+
+    transform:
+        translate(-50%, -50%)
+        scale(0);
+
+    pointer-events: none;
+
+    opacity: 0;
+
+    transition:
+        width 0.08s ease,
+        height 0.08s ease,
+        opacity 0.08s ease,
+        transform 0.08s ease;
+}
+
+
+.key.pressed::after {
+
+    width: 75px;
+    height: 75px;
+
+    opacity: 1;
+
+    transform:
+        translate(-50%, -50%)
+        scale(1);
+}
+
+
+/* =========================================================
+   ABC 字母
+========================================================= */
 
 .key .letters {
 
@@ -234,13 +328,13 @@ body {
 
     font-weight: 600;
 
-    color: #555;
+    color: #555555;
 }
 
 
-/* =========================
+/* =========================================================
    空白按钮
-========================= */
+========================================================= */
 
 .key.empty {
 
@@ -250,21 +344,46 @@ body {
 }
 
 
-/* =========================
+/* 空白按钮不显示反馈 */
+
+.key.empty::after {
+
+    display: none;
+}
+
+
+/* =========================================================
    删除按钮
-========================= */
+========================================================= */
 
 .key.delete {
 
     font-size: 20px;
 
-    background: #fff;
+    background: #ffffff;
 }
 
 
-/* =========================
-   屏幕较矮的安卓手机
-========================= */
+/* =========================================================
+   删除图标
+========================================================= */
+
+.delete-icon {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 24px;
+    height: 20px;
+}
+
+
+/* =========================================================
+   屏幕较矮的手机
+========================================================= */
 
 @media (max-height: 650px) {
 
@@ -273,27 +392,88 @@ body {
         margin-bottom: 20px;
 
         font-size: 20px;
+
+        line-height: 26px;
     }
+
 
     .dots {
 
         margin-bottom: 20px;
     }
 
+
     .key {
 
         height: 52px;
     }
+
+
+    .key.pressed::after {
+
+        width: 65px;
+        height: 65px;
+    }
+
 }
 
 
-/* =========================
-   禁止选择
-========================= */
+/* =========================================================
+   更小屏幕
+========================================================= */
 
-body {
+@media (max-height: 550px) {
+
+    .dialog-header {
+
+        height: 25px;
+    }
+
+
+    .title {
+
+        margin-bottom: 15px;
+
+        font-size: 19px;
+    }
+
+
+    .dots {
+
+        margin-bottom: 15px;
+    }
+
+
+    .key {
+
+        height: 48px;
+
+        font-size: 20px;
+    }
+
+}
+
+
+/* =========================================================
+   防止图片/文字拖动
+========================================================= */
+
+button {
+
     -webkit-user-select: none;
     user-select: none;
+
+    -webkit-touch-callout: none;
+}
+
+
+/* =========================================================
+   点击时取消浏览器默认效果
+========================================================= */
+
+button:focus {
+
+    outline: none;
 }
 
 </style>
@@ -304,11 +484,9 @@ body {
 <body>
 
 
-<!--
-    页面加载后直接显示
-    没有关闭按钮
-    必须输入4位数字
--->
+<!-- =======================================================
+     全屏密码页面
+======================================================== -->
 
 <div
     class="password-mask"
@@ -322,14 +500,18 @@ body {
     >
 
 
-        <!-- 顶部空白 -->
+        <!-- =================================================
+             顶部
+        ================================================== -->
 
         <div
             class="dialog-header"
         ></div>
 
 
-        <!-- 密码标题 -->
+        <!-- =================================================
+             密码标题
+        ================================================== -->
 
         <div
             class="title"
@@ -338,7 +520,9 @@ body {
         </div>
 
 
-        <!-- 四个密码圆点 -->
+        <!-- =================================================
+             密码圆点
+        ================================================== -->
 
         <div
             class="dots"
@@ -356,10 +540,14 @@ body {
         </div>
 
 
-        <!-- 数字键盘 -->
+        <!-- =================================================
+             数字键盘
+        ================================================== -->
 
         <div class="keypad">
 
+
+            <!-- 1 -->
 
             <button
                 class="key"
@@ -369,10 +557,13 @@ body {
             </button>
 
 
+            <!-- 2 -->
+
             <button
                 class="key"
                 data-number="2"
             >
+
                 2
 
                 <span class="letters">
@@ -382,10 +573,13 @@ body {
             </button>
 
 
+            <!-- 3 -->
+
             <button
                 class="key"
                 data-number="3"
             >
+
                 3
 
                 <span class="letters">
@@ -395,10 +589,13 @@ body {
             </button>
 
 
+            <!-- 4 -->
+
             <button
                 class="key"
                 data-number="4"
             >
+
                 4
 
                 <span class="letters">
@@ -408,10 +605,13 @@ body {
             </button>
 
 
+            <!-- 5 -->
+
             <button
                 class="key"
                 data-number="5"
             >
+
                 5
 
                 <span class="letters">
@@ -421,10 +621,13 @@ body {
             </button>
 
 
+            <!-- 6 -->
+
             <button
                 class="key"
                 data-number="6"
             >
+
                 6
 
                 <span class="letters">
@@ -434,10 +637,13 @@ body {
             </button>
 
 
+            <!-- 7 -->
+
             <button
                 class="key"
                 data-number="7"
             >
+
                 7
 
                 <span class="letters">
@@ -447,10 +653,13 @@ body {
             </button>
 
 
+            <!-- 8 -->
+
             <button
                 class="key"
                 data-number="8"
             >
+
                 8
 
                 <span class="letters">
@@ -460,10 +669,13 @@ body {
             </button>
 
 
+            <!-- 9 -->
+
             <button
                 class="key"
                 data-number="9"
             >
+
                 9
 
                 <span class="letters">
@@ -483,6 +695,8 @@ body {
             </button>
 
 
+            <!-- 0 -->
+
             <button
                 class="key"
                 data-number="0"
@@ -498,7 +712,13 @@ body {
                 id="deleteBtn"
                 aria-label="删除"
             >
-                ⌫
+
+                <span class="delete-icon">
+
+                    ⌫
+
+                </span>
+
             </button>
 
 
@@ -510,23 +730,26 @@ body {
 </div>
 
 
+
 <script>
 
-/* =========================
-   当前输入的密码
-========================= */
+
+/* =========================================================
+   当前密码
+========================================================= */
 
 let password = "";
 
 
-/* =========================
+/* =========================================================
    DOM
-========================= */
+========================================================= */
 
 const mask =
     document.getElementById(
         "passwordMask"
     );
+
 
 const dots =
     document.querySelectorAll(
@@ -534,9 +757,9 @@ const dots =
     );
 
 
-/* =========================
+/* =========================================================
    更新密码圆点
-========================= */
+========================================================= */
 
 function updateDots() {
 
@@ -554,28 +777,34 @@ function updateDots() {
 }
 
 
-/* =========================
+/* =========================================================
    输入数字
-========================= */
+========================================================= */
 
 function inputNumber(number) {
 
     /* 最多4位 */
 
     if (password.length >= 4) {
+
         return;
+
     }
 
+
+    /* 添加数字 */
 
     password += number;
 
 
+    /* 更新圆点 */
+
     updateDots();
 
 
-    /* =====================
-       输入完成4位
-    ===================== */
+    /* =====================================================
+       输入满4位
+    ===================================================== */
 
     if (password.length === 4) {
 
@@ -584,15 +813,21 @@ function inputNumber(number) {
 
 
         setTimeout(
-            () => {
+            function () {
+
 
                 /*
-                 * 这里可以处理密码
+                 * 当前逻辑：
                  *
-                 * 例如：
+                 * 输入任意4位密码后关闭
+                 *
+                 * 如果以后需要验证密码，
+                 * 可以在这里加入：
                  *
                  * if (result === "1234") {
-                 *     unlockPage();
+                 *
+                 *     mask.style.display = "none";
+                 *
                  * }
                  */
 
@@ -603,12 +838,11 @@ function inputNumber(number) {
                 );
 
 
-                /*
-                 * 输入4位后关闭
-                 */
+                /* 关闭密码页面 */
 
                 mask.style.display =
                     "none";
+
 
                 document.body.style.overflow =
                     "";
@@ -623,18 +857,19 @@ function inputNumber(number) {
 }
 
 
-/* =========================
-   数字按钮
-========================= */
+/* =========================================================
+   数字按钮点击
+========================================================= */
 
 document
     .querySelectorAll(
         ".key[data-number]"
     )
     .forEach(
-        btn => {
+        function (button) {
 
-            btn.addEventListener(
+
+            button.addEventListener(
                 "click",
                 function () {
 
@@ -645,13 +880,14 @@ document
                 }
             );
 
+
         }
     );
 
 
-/* =========================
-   删除按钮
-========================= */
+/* =========================================================
+   删除
+========================================================= */
 
 document
     .getElementById(
@@ -661,15 +897,18 @@ document
         "click",
         function () {
 
+
             if (
                 password.length > 0
             ) {
+
 
                 password =
                     password.slice(
                         0,
                         -1
                     );
+
 
                 updateDots();
 
@@ -679,9 +918,140 @@ document
     );
 
 
-/* =========================
-   禁止点击关闭
-========================= */
+/* =========================================================
+   手机触摸反馈
+========================================================= */
+
+document
+    .querySelectorAll(
+        ".key:not(.empty)"
+    )
+    .forEach(
+        function (button) {
+
+
+            /* ---------------------------------------------
+               手指按下
+            --------------------------------------------- */
+
+            button.addEventListener(
+                "touchstart",
+                function () {
+
+
+                    this.classList.add(
+                        "pressed"
+                    );
+
+
+                },
+                {
+                    passive: true
+                }
+            );
+
+
+            /* ---------------------------------------------
+               手指抬起
+            --------------------------------------------- */
+
+            button.addEventListener(
+                "touchend",
+                function () {
+
+
+                    this.classList.remove(
+                        "pressed"
+                    );
+
+
+                },
+                {
+                    passive: true
+                }
+            );
+
+
+            /* ---------------------------------------------
+               手指滑出按钮
+            --------------------------------------------- */
+
+            button.addEventListener(
+                "touchcancel",
+                function () {
+
+
+                    this.classList.remove(
+                        "pressed"
+                    );
+
+
+                },
+                {
+                    passive: true
+                }
+            );
+
+
+        }
+    );
+
+
+/* =========================================================
+   鼠标电脑测试
+========================================================= */
+
+document
+    .querySelectorAll(
+        ".key:not(.empty)"
+    )
+    .forEach(
+        function (button) {
+
+
+            button.addEventListener(
+                "mousedown",
+                function () {
+
+                    this.classList.add(
+                        "pressed"
+                    );
+
+                }
+            );
+
+
+            button.addEventListener(
+                "mouseup",
+                function () {
+
+                    this.classList.remove(
+                        "pressed"
+                    );
+
+                }
+            );
+
+
+            button.addEventListener(
+                "mouseleave",
+                function () {
+
+                    this.classList.remove(
+                        "pressed"
+                    );
+
+                }
+            );
+
+
+        }
+    );
+
+
+/* =========================================================
+   禁止点击遮罩关闭
+========================================================= */
 
 mask.addEventListener(
     "click",
@@ -693,15 +1063,17 @@ mask.addEventListener(
 );
 
 
-/* =========================
-   页面打开时锁定滚动
-========================= */
+/* =========================================================
+   页面打开立即锁定滚动
+========================================================= */
 
 document.body.style.overflow =
     "hidden";
+
 
 </script>
 
 
 </body>
+
 </html>
