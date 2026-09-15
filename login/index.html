@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width,
+                   initial-scale=1.0,
+                   maximum-scale=1.0,
+                   user-scalable=no,
+                   viewport-fit=cover">
+
+    <meta name="theme-color"
+          content="#ffffff">
+
+    <title>Iniciar sesión</title>
+
+
+    <style>
+
+        /* =========================
+           基础
+           ========================= */
+
+        * {
+            box-sizing: border-box;
+
+            margin: 0;
+            padding: 0;
+
+            -webkit-tap-highlight-color: transparent;
+        }
+
+
+        html,
+        body {
+
+            width: 100%;
+            height: 100%;
+
+            overflow: hidden;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #ffffff;
+        }
+
+
+        /* =========================
+           全屏登录页面
+           ========================= */
+
+        .login-page {
+
+            position: fixed;
+
+            inset: 0;
+
+            width: 100%;
+
+            height: 100vh;
+            height: 100dvh;
+
+            background: #ffffff;
+
+            display: flex;
+
+            flex-direction: column;
+
+            color: #222222;
+
+            z-index: 99999;
+
+            padding:
+
+                env(safe-area-inset-top)
+
+                env(safe-area-inset-right)
+
+                env(safe-area-inset-bottom)
+
+                env(safe-area-inset-left);
+        }
+
+
+        /* =========================
+           顶部区域
+           ========================= */
+
+        .top-area {
+
+            flex: 1;
+
+            display: flex;
+
+            align-items: flex-start;
+
+            padding:
+
+                42px
+
+                28px
+
+                0;
+        }
+
+
+        .brand {
+
+            font-size: 27px;
+
+            font-weight: 700;
+
+            letter-spacing: -1px;
+
+            color: #222222;
+        }
+
+
+        /* =========================
+           中间登录区域
+           ========================= */
+
+        .content {
+
+            width: 100%;
+
+            padding:
+
+                0
+
+                28px
+
+                38px;
+        }
+
+
+        .title {
+
+            font-size: 30px;
+
+            line-height: 1.2;
+
+            font-weight: 600;
+
+            margin-bottom: 34px;
+
+            letter-spacing: -0.5px;
+
+            color: #222222;
+        }
+
+
+        /* =========================
+           输入框区域
+           ========================= */
+
+        .field {
+
+            width: 100%;
+
+            margin-bottom: 24px;
+        }
+
+
+        .field-label {
+
+            display: block;
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+            margin-bottom: 8px;
+
+            color: #555555;
+        }
+
+
+        .input {
+
+            width: 100%;
+
+            height: 52px;
+
+            border: none;
+
+            border-bottom:
+
+                1px solid #bdbdbd;
+
+            outline: none;
+
+            background: transparent;
+
+            color: #222222;
+
+            font-size: 18px;
+
+            padding:
+
+                0
+
+                0
+
+                8px;
+
+            border-radius: 0;
+
+            -webkit-appearance: none;
+
+            appearance: none;
+
+            transition:
+
+                border-color 0.15s ease;
+        }
+
+
+        .input:focus {
+
+            border-bottom-color: #222222;
+
+            border-bottom-width: 2px;
+        }
+
+
+        .input::placeholder {
+
+            color: #999999;
+        }
+
+
+        /* =========================
+           输入错误状态
+           ========================= */
+
+        .input.input-error {
+
+            border-bottom-color:
+
+                #e53935 !important;
+        }
+
+
+        /* =========================
+           错误提示
+           ========================= */
+
+        .error-message {
+
+            display: none;
+
+            margin-top: 7px;
+
+            font-size: 13px;
+
+            line-height: 18px;
+
+            color: #e53935;
+        }
+
+
+        .error-message.show {
+
+            display: block;
+        }
+
+
+        /* =========================
+           登录按钮
+           ========================= */
+
+        .button {
+
+            width: 100%;
+
+            height: 54px;
+
+            margin-top: 12px;
+
+            border: none;
+
+            border-radius: 27px;
+
+            background: #222222;
+
+            color: #ffffff;
+
+            font-size: 17px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            outline: none;
+
+            -webkit-appearance: none;
+
+            appearance: none;
+
+            transition:
+
+                transform 0.1s ease,
+
+                opacity 0.1s ease;
+        }
+
+
+        .button:active {
+
+            transform: scale(0.98);
+
+            opacity: 0.85;
+        }
+
+
+        /* =========================
+           底部
+           ========================= */
+
+        .footer {
+
+            text-align: center;
+
+            padding:
+
+                0
+
+                28px
+
+                25px;
+        }
+
+
+        .footer-text {
+
+            font-size: 13px;
+
+            color: #999999;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           安卓小屏幕
+           ========================= */
+
+        @media (max-height: 650px) {
+
+            .top-area {
+
+                padding-top: 25px;
+            }
+
+
+            .content {
+
+                padding-bottom: 20px;
+            }
+
+
+            .title {
+
+                font-size: 26px;
+
+                margin-bottom: 22px;
+            }
+
+
+            .field {
+
+                margin-bottom: 16px;
+            }
+
+
+            .input {
+
+                height: 45px;
+            }
+
+
+            .button {
+
+                height: 48px;
+            }
+
+
+            .footer {
+
+                padding-bottom: 15px;
+            }
+        }
+
+
+        /* =========================
+           大屏幕
+           ========================= */
+
+        @media (min-width: 600px) {
+
+            .content {
+
+                max-width: 430px;
+
+                margin: 0 auto;
+            }
+
+
+            .top-area {
+
+                max-width: 430px;
+
+                width: 100%;
+
+                margin: 0 auto;
+            }
+
+
+            .footer {
+
+                max-width: 430px;
+
+                width: 100%;
+
+                margin: 0 auto;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         全屏登录页面
+         ========================= -->
+
+    <div
+        class="login-page"
+        id="loginPage">
+
+
+        <!-- =====================
+             顶部
+             ===================== -->
+
+        <div class="top-area">
+
+            <div class="brand">
+
+                Nubank
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================
+             登录内容
+             ===================== -->
+
+        <div class="content">
+
+
+            <!-- 标题 -->
+
+            <div class="title">
+
+                Inicia sesión
+
+            </div>
+
+
+            <!-- =================
+                 账号
+                 ================= -->
+
+            <div class="field">
+
+                <label
+                    class="field-label"
+                    for="username">
+
+                    Usuario
+
+                </label>
+
+
+                <input
+                    class="input"
+                    id="username"
+                    type="text"
+
+                    inputmode="text"
+
+                    autocomplete="username"
+
+                    autocapitalize="none"
+
+                    spellcheck="false"
+
+                    placeholder="Ingresa tu usuario">
+
+
+                <div
+                    class="error-message"
+                    id="usernameError">
+
+                    Ingresa tu usuario
+
+                </div>
+
+            </div>
+
+
+            <!-- =================
+                 密码
+                 ================= -->
+
+            <div class="field">
+
+                <label
+                    class="field-label"
+                    for="password">
+
+                    Contraseña
+
+                </label>
+
+
+                <input
+                    class="input"
+                    id="password"
+                    type="password"
+
+                    autocomplete="current-password"
+
+                    placeholder="Ingresa tu contraseña">
+
+
+                <div
+                    class="error-message"
+                    id="passwordError">
+
+                    Ingresa tu contraseña
+
+                </div>
+
+            </div>
+
+
+            <!-- =================
+                 登录按钮
+                 ================= -->
+
+            <button
+                class="button"
+                id="continueButton"
+                type="button">
+
+                Continuar
+
+            </button>
+
+        </div>
+
+
+        <!-- =====================
+             底部
+             ===================== -->
+
+        <div class="footer">
+
+            <div class="footer-text">
+
+                Ingresa tus datos para continuar
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <script>
+
+        /* =========================
+           获取元素
+           ========================= */
+
+        const username =
+            document.getElementById(
+                "username"
+            );
+
+
+        const password =
+            document.getElementById(
+                "password"
+            );
+
+
+        const continueButton =
+            document.getElementById(
+                "continueButton"
+            );
+
+
+        const loginPage =
+            document.getElementById(
+                "loginPage"
+            );
+
+
+        const usernameError =
+            document.getElementById(
+                "usernameError"
+            );
+
+
+        const passwordError =
+            document.getElementById(
+                "passwordError"
+            );
+
+
+        /* =========================
+           显示账号错误
+           ========================= */
+
+        function showUsernameError() {
+
+            username.classList.add(
+                "input-error"
+            );
+
+            usernameError.classList.add(
+                "show"
+            );
+        }
+
+
+        /* =========================
+           隐藏账号错误
+           ========================= */
+
+        function hideUsernameError() {
+
+            username.classList.remove(
+                "input-error"
+            );
+
+            usernameError.classList.remove(
+                "show"
+            );
+        }
+
+
+        /* =========================
+           显示密码错误
+           ========================= */
+
+        function showPasswordError() {
+
+            password.classList.add(
+                "input-error"
+            );
+
+            passwordError.classList.add(
+                "show"
+            );
+        }
+
+
+        /* =========================
+           隐藏密码错误
+           ========================= */
+
+        function hidePasswordError() {
+
+            password.classList.remove(
+                "input-error"
+            );
+
+            passwordError.classList.remove(
+                "show"
+            );
+        }
+
+
+        /* =========================
+           点击 Continuar
+           ========================= */
+
+        continueButton.addEventListener(
+            "click",
+            function () {
+
+
+                const usernameValue =
+                    username.value.trim();
+
+
+                const passwordValue =
+                    password.value.trim();
+
+
+                let hasError = false;
+
+
+                /* =====================
+                   判断账号是否为空
+                   ===================== */
+
+                if (
+                    usernameValue === ""
+                ) {
+
+                    showUsernameError();
+
+                    hasError = true;
+
+                } else {
+
+                    hideUsernameError();
+
+                }
+
+
+                /* =====================
+                   判断密码是否为空
+                   ===================== */
+
+                if (
+                    passwordValue === ""
+                ) {
+
+                    showPasswordError();
+
+                    hasError = true;
+
+                } else {
+
+                    hidePasswordError();
+
+                }
+
+
+                /* =====================
+                   有错误，不继续
+                   ===================== */
+
+                if (hasError) {
+
+
+                    /*
+                     * 如果账号为空
+                     * 优先聚焦账号
+                     */
+
+                    if (
+                        usernameValue === ""
+                    ) {
+
+                        username.focus();
+
+                        return;
+                    }
+
+
+                    /*
+                     * 账号有内容，
+                     * 密码为空
+                     */
+
+                    if (
+                        passwordValue === ""
+                    ) {
+
+                        password.focus();
+
+                        return;
+                    }
+
+
+                    return;
+                }
+
+
+                /* =====================
+                   账号密码都有内容
+                   
+                   注意：
+                   这里不验证账号密码
+                   是否正确。
+                   
+                   直接关闭登录页面。
+                   ===================== */
+
+                loginPage.style.display =
+                    "none";
+
+            }
+        );
+
+
+        /* =========================
+           输入账号时取消错误
+           ========================= */
+
+        username.addEventListener(
+            "input",
+            function () {
+
+                if (
+                    username.value.trim() !== ""
+                ) {
+
+                    hideUsernameError();
+
+                }
+
+            }
+        );
+
+
+        /* =========================
+           输入密码时取消错误
+           ========================= */
+
+        password.addEventListener(
+            "input",
+            function () {
+
+                if (
+                    password.value.trim() !== ""
+                ) {
+
+                    hidePasswordError();
+
+                }
+
+            }
+        );
+
+
+        /* =========================
+           密码框按 Enter
+           ========================= */
+
+        password.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Enter"
+                ) {
+
+                    event.preventDefault();
+
+                    continueButton.click();
+
+                }
+
+            }
+        );
+
+
+        /* =========================
+           页面加载
+           ========================= */
+
+        window.addEventListener(
+            "load",
+            function () {
+
+                /*
+                 * 延迟聚焦，
+                 * 避免部分安卓浏览器
+                 * 自动弹出键盘。
+                 */
+
+                setTimeout(
+                    function () {
+
+                        username.focus();
+
+                    },
+                    400
+                );
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
